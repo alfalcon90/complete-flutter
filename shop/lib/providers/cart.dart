@@ -74,6 +74,26 @@ class Cart extends StateNotifier<List<CartItem>> {
   void clear() {
     state = [];
   }
+
+  void removeQuantity(String productId, int quantity) {
+    int index = state.indexWhere((item) => item.productId == productId);
+
+    if (index.isNegative) {
+      return;
+    }
+
+    if (state[index].quantity <= 1) {
+      this.remove(state[index].id);
+    } else {
+      state = [
+        for (final item in state)
+          if (item.productId == productId)
+            item.copyWith(quantity: item.quantity - quantity)
+          else
+            item
+      ];
+    }
+  }
 }
 
 final cartProvider =

@@ -73,7 +73,9 @@ class Products extends StateNotifier<List<Product>> {
           ),
         ]);
 
-  void addProduct() {}
+  void add(Product newProduct) {
+    state = [...state, newProduct];
+  }
 
   Product findById(String id) {
     return state.firstWhere((product) => product.id == id);
@@ -87,6 +89,25 @@ class Products extends StateNotifier<List<Product>> {
         else
           product
     ];
+  }
+
+  void update(Product updatedProduct) {
+    state = [
+      for (final product in state)
+        if (product.id == updatedProduct.id)
+          product.copyWith(
+            title: updatedProduct.title,
+            description: updatedProduct.description,
+            price: updatedProduct.price,
+            imageUrl: updatedProduct.imageUrl,
+          )
+        else
+          product
+    ];
+  }
+
+  void remove(String id) {
+    state = state.where((product) => product.id != id).toList();
   }
 }
 

@@ -43,6 +43,19 @@ class ProductItem extends HookWidget {
                 context
                     .read(cartProvider.notifier)
                     .addItem(product.id, product.price, product.title);
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${product.title} was added to your cart'),
+                    duration: Duration(seconds: 2),
+                    action: SnackBarAction(
+                      label: 'Undo',
+                      onPressed: () => context
+                          .read(cartProvider.notifier)
+                          .removeQuantity(product.id, 1),
+                    ),
+                  ),
+                );
               },
               icon: Icon(Icons.shopping_cart)),
           backgroundColor: Colors.black87,

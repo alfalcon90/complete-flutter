@@ -1,3 +1,5 @@
+import 'package:app_name/screens/edit_product_screen.dart';
+import 'package:app_name/screens/products_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:app_name/screens/product_details_screen.dart';
@@ -22,6 +24,8 @@ class MyApp extends StatelessWidget {
         ProductDetailsScreen.routeName: (context) => ProductDetailsScreen(),
         CartScreen.routeName: (context) => CartScreen(),
         OrdersScreen.routeName: (context) => OrdersScreen(),
+        ProductsScreen.routeName: (context) => ProductsScreen(),
+        EditProductScreen.routeName: (context) => EditProductScreen(),
       },
     );
   }
