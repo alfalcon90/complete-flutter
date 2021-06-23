@@ -12,6 +12,7 @@ dependencies:
   flutter_hooks: ^0.17.0
   hooks_riverpod: ^0.14.0+4
   intl: ^0.17.0
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:

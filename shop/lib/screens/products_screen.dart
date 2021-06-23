@@ -29,11 +29,14 @@ class ProductsScreen extends HookWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: ListView.builder(
-          itemBuilder: (ctx, i) => ManagedProductItem(product: products[i]),
-          itemCount: products.length,
+      body: RefreshIndicator(
+        onRefresh: () => context.read(productsProvider.notifier).fetch(),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: ListView.builder(
+            itemBuilder: (ctx, i) => ManagedProductItem(product: products[i]),
+            itemCount: products.length,
+          ),
         ),
       ),
     );

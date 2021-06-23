@@ -18,6 +18,10 @@ class OverviewScreen extends HookWidget {
     final filter = useProvider(productListFilterProvider);
     final cartQuantity = useProvider(cartQuantityProvider);
 
+    useEffect(() {
+      context.read(productsProvider.notifier).fetch();
+    }, []);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Shop'),

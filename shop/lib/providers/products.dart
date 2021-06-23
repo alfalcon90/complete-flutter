@@ -1,4 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'dart:convert';
+import 'package:http/http.dart';
 
 class Product {
   Product({
@@ -33,6 +35,33 @@ class Product {
         imageUrl: imageUrl ?? this.imageUrl,
         isFavorite: isFavorite ?? this.isFavorite,
       );
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'price': price,
+      'imageUrl': imageUrl,
+      'isFavorite': isFavorite,
+    };
+  }
+
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      id: map['id'],
+      title: map['title'],
+      description: map['description'],
+      price: map['price'],
+      imageUrl: map['imageUrl'],
+      isFavorite: map['isFavorite'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Product.fromJson(String source) =>
+      Product.fromMap(json.decode(source));
 }
 
 class Products extends StateNotifier<List<Product>> {
@@ -73,8 +102,15 @@ class Products extends StateNotifier<List<Product>> {
           ),
         ]);
 
-  void add(Product newProduct) {
-    state = [...state, newProduct];
+  Future<void> add(Product newProduct) async {
+    try {
+      Uri url = Uri.parse(
+          'https://udemy-shop-ed71b-default-rtdb.firebaseio.com/products.json');
+      await post(url, body: newProduct.toJson());
+      state = [...state, newProduct];
+    } catch (err) {
+      print(err);
+    }
   }
 
   Product findById(String id) {
@@ -91,7 +127,14 @@ class Products extends StateNotifier<List<Product>> {
     ];
   }
 
-  void update(Product updatedProduct) {
+  void update(Product updatedProduct) async {
+    try {
+      Uri url = Uri.parse(
+          'https://udemy-shop-ed71b-default-rtdb.firebaseio.com/products/${updatedProduct.id}.json');
+      await patch(url, body: updatedProduct.toJson());
+    } catch (err) {
+      print(err);
+    }
     state = [
       for (final product in state)
         if (product.id == updatedProduct.id)
@@ -108,6 +151,19 @@ class Products extends StateNotifier<List<Product>> {
 
   void remove(String id) {
     state = state.where((product) => product.id != id).toList();
+  }
+
+  Future<void> fetch() async {
+    try {
+      Uri url = Uri.parse(
+          'https://udemy-shop-ed71b-default-rtdb.firebaseio.com/products.json');
+      Response res = await get(url);
+      Map<String, dynamic> fetchedProducts = json.decode(res.body);
+
+      state = [...fetchedProducts.values.map((e) => Product.fromMap(e))];
+    } catch (err) {
+      print(err);
+    }
   }
 }
 

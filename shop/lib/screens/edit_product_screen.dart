@@ -27,6 +27,7 @@ class EditProductScreen extends HookWidget {
     final imageURLController =
         useTextEditingController(text: existingProduct?.imageUrl);
     final imageURL = useState(imageURLController.text);
+    final isLoading = useState(false);
 
     Product editedProduct = Product(
       id: existingProduct != null
@@ -46,22 +47,38 @@ class EditProductScreen extends HookWidget {
     }, []);
 
     void saveForm() {
+      isLoading.value = true;
       final isValid = form.currentState!.validate();
       if (isValid) {
         form.currentState!.save();
         if (existingProduct != null) {
           context.read(productsProvider.notifier).update(editedProduct);
         } else {
-          context.read(productsProvider.notifier).add(editedProduct);
+          context.read(productsProvider.notifier).add(editedProduct).then((_) {
+            isLoading.value = false;
+            Navigator.of(context).pop();
+          });
         }
-        Navigator.of(context).pop();
       }
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Product'),
-        actions: [IconButton(onPressed: saveForm, icon: Icon(Icons.save))],
+        actions: isLoading.value
+            ? [
+                Center(
+                  child: Container(
+                    margin: EdgeInsets.only(right: 16),
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              ]
+            : [IconButton(onPressed: saveForm, icon: Icon(Icons.save))],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
