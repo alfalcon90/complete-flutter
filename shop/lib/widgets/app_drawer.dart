@@ -1,3 +1,4 @@
+import 'package:app_name/helpers/custom_route.dart';
 import 'package:app_name/screens/orders_screen.dart';
 import 'package:app_name/screens/overview_screen.dart';
 import 'package:app_name/screens/products_screen.dart';
@@ -17,11 +18,10 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.shop),
-            title: Text('Shop'),
-            onTap: () => Navigator.of(context)
-                .pushReplacementNamed(OverviewScreen.routeName),
-          ),
+              leading: Icon(Icons.shop),
+              title: Text('Shop'),
+              onTap: () => Navigator.of(context).pushReplacement(
+                  CustomRoute(builder: (context) => OverviewScreen()))),
           Divider(),
           ListTile(
             leading: Icon(Icons.payment),
