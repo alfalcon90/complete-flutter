@@ -4,8 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-GoogleSignIn _googleSignIn = GoogleSignIn();
-
 abstract class BaseAuthRepository {
   Stream<User?> get authStateChanges;
   Future<UserCredential?> signInWithGoogle();
@@ -29,12 +27,11 @@ class AuthRepository implements BaseAuthRepository {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       if (googleUser == null) {
         return null;
       }
-      print(googleUser.displayName);
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth =
@@ -56,7 +53,7 @@ class AuthRepository implements BaseAuthRepository {
   @override
   User? getCurrentUser() {
     try {
-      _read(firebaseAuthProvider).currentUser;
+      return _read(firebaseAuthProvider).currentUser;
     } on FirebaseAuthException catch (e) {
       throw CustomException(message: e.message);
     }
@@ -65,8 +62,7 @@ class AuthRepository implements BaseAuthRepository {
   @override
   Future<void> signOut() async {
     try {
-      print('object');
-      _googleSignIn.disconnect();
+      await _read(firebaseAuthProvider).signOut();
     } on FirebaseAuthException catch (e) {
       throw CustomException(message: e.message);
     }
