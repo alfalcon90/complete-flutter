@@ -9,8 +9,15 @@ class AuthScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-            onPressed: () =>
-                context.read(authControllerProvider.notifier).signIn()));
+      body: Center(
+        child: ElevatedButton.icon(
+          onPressed: () =>
+              context.read(authControllerProvider.notifier).signIn(),
+          label: Text('Sign in with Google'),
+          icon: Icon(Icons.vpn_key),
+          style: ButtonStyle(),
+        ),
+      ),
+    );
   }
 }
